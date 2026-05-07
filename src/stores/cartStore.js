@@ -83,17 +83,14 @@ export const useCartStore = defineStore('cart', () => {
    * @param {number} id - 제거할 아이템의 id
    */
   function removeItem(id) {
-    // TODO: items.value에서 해당 id를 가진 아이템을 제거하세요
-    // 힌트: Array.filter를 사용하면 한 줄로 해결됩니다
     items.value = items.value.filter(item => item.id !== id);
-    console.log("remove item : ", items.value);
   }
 
   /**
    * 장바구니를 전부 비웁니다.
    */
   function clearCart() {
-    // TODO: items.value를 빈 배열로 초기화하세요
+    items.value = [];
   }
 
   /**

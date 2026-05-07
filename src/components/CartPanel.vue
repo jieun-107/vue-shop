@@ -33,11 +33,7 @@
       </div>
 
       <!-- 결제 버튼 -->
-      <!--
-        TODO: 버튼 클릭 시 handleCheckout 함수를 호출하세요
-        - cartStore.items가 비어있으면 버튼을 비활성화하세요 (:disabled)
-      -->
-      <button class="checkout-btn">
+      <button class="checkout-btn" @click="handleCheckout" :disabled="cartStore.items.length === 0">
         결제하기
       </button>
 
@@ -63,10 +59,10 @@ function handleRemove(id) {
 
 // 결제 버튼 클릭
 function handleCheckout() {
-  // TODO: 아래를 구현하세요
-  // 1. confirm('결제하시겠습니까?') 로 확인
-  // 2. 확인하면 cartStore.clearCart() 호출
-  // 3. alert('결제가 완료되었습니다! 🎉') 표시
+  if(confirm('결제하시겠습니까?')){
+    cartStore.clearCart();
+    alert('결제가 완료되었습니다! 🎉');
+  }
 }
 </script>
 

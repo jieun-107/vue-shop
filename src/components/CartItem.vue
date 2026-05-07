@@ -5,24 +5,17 @@
 
     <div class="info">
       <p class="name">{{ item.name }}</p>
-      <!-- TODO: item.price * item.qty 를 계산해서 toLocaleString()으로 표시하세요 -->
       <p class="subtotal">₩ {{ (item.price * item.qty).toLocaleString() }}</p>
     </div>
 
     <!-- 수량 조절 버튼 -->
     <div class="qty-control">
-      <!--
-        TODO: 각 버튼 클릭 시 handleChangeQty를 호출하세요
-        - '-' 버튼: delta = -1
-        - '+' 버튼: delta = +1
-      -->
       <button class="qty-btn" @click="() => handleChangeQty(-1)">−</button>
       <span class="qty">{{ item.qty }}</span>
       <button class="qty-btn" @click="() => handleChangeQty(1)">+</button>
     </div>
 
     <!-- 삭제 버튼 -->
-    <!-- TODO: 클릭 시 handleRemove를 호출하세요 -->
     <button class="remove-btn" @click="handleRemove">✕</button>
 
   </div>

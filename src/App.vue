@@ -6,10 +6,9 @@
       <h1 class="logo">🛍️ Vue Shop</h1>
 
       <!-- 장바구니 아이콘 + 수량 뱃지 -->
-      <!-- TODO: cartStore.totalCount가 0보다 클 때만 뱃지를 표시해 보세요 (v-if) -->
       <div class="cart-icon-wrap">
         <span class="cart-icon">🛒</span>
-        <span class="badge">{{ cartStore.totalCount }}</span>
+        <span v-if="cartStore.totalCount > 0" class="badge">{{ cartStore.totalCount }}</span>
       </div>
     </header>
 
@@ -20,15 +19,13 @@
       <section class="product-section">
 
         <!-- 카테고리 필터 -->
-        <!-- TODO: CategoryFilter에서 'update:category' 이벤트를 받아 selectedCategory를 업데이트하세요 -->
         <CategoryFilter
           :categories="CATEGORIES"
           :selected="selectedCategory"
+          @update:category="handleSelect"
         />
 
         <!-- 상품 카드 목록 -->
-        <!-- TODO: filteredProducts를 v-for로 순회하며 ProductCard를 렌더링하세요 -->
-        <!--       각 카드에서 'add-to-cart' 이벤트가 오면 handleAddToCart를 호출하세요 -->
         <div class="product-grid">
           <!-- ProductCard 여기에 -->
            <ProductCard v-for="data in filteredProducts" :key="data.id" :product="data" @add-to-cart="handleAddToCart(data)"
@@ -62,16 +59,20 @@ const cartStore = useCartStore()
 const selectedCategory = ref('전체')
 
 // 카테고리로 필터링된 상품 목록
-// TODO: selectedCategory가 '전체'면 PRODUCTS 전체를,
-//       아니면 category가 일치하는 상품만 computed로 반환하세요
 const filteredProducts = computed(() => {
-  return PRODUCTS
+  if(selectedCategory.value === '전체') return PRODUCTS;
+  return PRODUCTS.filter(product => product.category === selectedCategory.value);
 })
 
 function handleAddToCart(product) {
   cartStore.addItem(product);
   console.log('Added to cart:', product);
 }
+
+function handleSelect(category) {
+  selectedCategory.value = category;
+}
+
 </script>
 
 <style scoped>

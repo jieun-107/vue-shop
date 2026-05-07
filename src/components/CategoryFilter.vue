@@ -1,11 +1,11 @@
 <template>
   <div class="filter-bar">
-    <!--
-      TODO: props.categories 배열을 v-for로 순회하며 버튼을 렌더링하세요.
-      - :key 바인딩 필요
-      - 현재 선택된 카테고리(props.selected)와 같으면 'active' 클래스 추가
-      - 클릭 시 부모에게 'update:category' 이벤트와 해당 카테고리 값을 emit
-    -->
+    <button 
+      v-for="category in props.categories" 
+      :key="category"
+      class="filter-btn"
+      :class="{ 'active': props.selected === category }"
+      @click="() => emit('update:category', category)">{{ category }}</button>
   </div>
 </template>
 
@@ -29,7 +29,7 @@ const emit = defineEmits(['update:category'])
 
 // 카테고리 버튼 클릭 핸들러
 function handleSelect(category) {
-  // TODO: emit을 사용해 'update:category' 이벤트와 category 값을 부모에게 전달하세요
+  emit('update:category', category);
 }
 </script>
 
