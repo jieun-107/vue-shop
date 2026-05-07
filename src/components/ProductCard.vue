@@ -5,17 +5,11 @@
 
     <div class="info">
       <p class="name">{{ product.name }}</p>
-      <!-- TODO: product.price를 toLocaleString()으로 포맷해서 표시하세요 -->
-      <p class="price">₩{{ product.price }}</p>
+      <p class="price">₩{{ product.price.toLocaleString() }}</p>
     </div>
 
-    <!--
-      TODO: 버튼 클릭 시 handleAdd 함수를 호출하세요 (@click)
-      - isAlreadyInCart가 true면 버튼 텍스트를 '✓ 담김'으로,
-        false면 '+ 담기'로 표시하세요 (삼항 연산자 또는 v-if/v-else)
-    -->
-    <button class="add-btn" :class="{ added: isAlreadyInCart }">
-      + 담기
+    <button class="add-btn" :class="{ added: isAlreadyInCart }" @click="handleAdd">
+      {{ isAlreadyInCart ? '✓ 담김' : '+ 담기' }}
     </button>
 
   </div>
@@ -40,14 +34,13 @@ const emit = defineEmits(['add-to-cart'])
 const cartStore = useCartStore()
 
 // 이 상품이 이미 장바구니에 담겼는지 여부
-// TODO: cartStore.isInCart(props.product.id)를 computed로 감싸서 반환하세요
 const isAlreadyInCart = computed(() => {
-  return false
+  return cartStore.isInCart(props.product.id);
 })
 
 // 담기 버튼 클릭 시 실행
 function handleAdd() {
-  // TODO: emit으로 'add-to-cart' 이벤트와 props.product를 부모에게 전달하세요
+  emit('add-to-cart', props.product);
 }
 </script>
 

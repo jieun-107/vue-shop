@@ -3,39 +3,32 @@
     <h2 class="title">장바구니</h2>
 
     <!-- 장바구니가 비었을 때 -->
-    <!-- TODO: cartStore.items 배열이 비어있을 때 이 블록을 보여주세요 (v-if) -->
-    <div class="empty">
+    <div v-if="cartStore.items.length === 0" class="empty">
       <p>🛒</p>
       <p>장바구니가 비어있어요</p>
     </div>
 
     <!-- 장바구니에 아이템이 있을 때 -->
-    <!-- TODO: items가 있을 때 이 블록을 보여주세요 (v-else) -->
-    <div>
+    <div v-else>
 
       <!-- 아이템 목록 -->
-      <!-- TODO: cartStore.items를 v-for로 순회하며 CartItem을 렌더링하세요 -->
-      <!--       CartItem에서 오는 'change-qty', 'remove' 이벤트도 처리하세요 -->
-      <div class="item-list">
-        <!-- CartItem 여기에 -->
+      <div class="item-list" v-for="item in cartStore.items" :key="item.id">
+         <CartItem :item="item" @change-qty="handleChangeQty" @remove="handleRemove" />
       </div>
 
       <!-- 금액 요약 -->
       <div class="summary">
         <div class="summary-row">
           <span>상품 금액</span>
-          <!-- TODO: cartStore.subtotal을 toLocaleString()으로 포맷해서 표시하세요 -->
-          <span>₩{{ cartStore.subtotal }}</span>
+          <span>₩{{ cartStore.subtotal.toLocaleString() }}</span>
         </div>
         <div class="summary-row">
           <span>배송비</span>
-          <!-- TODO: shippingFee가 0이면 '무료', 아니면 금액을 표시하세요 -->
-          <span>₩{{ cartStore.shippingFee }}</span>
+          <span>₩{{ cartStore.shippingFee === 0 ? "무료" :  cartStore.shippingFee.toLocaleString()}}</span>
         </div>
         <div class="summary-row total">
           <span>합계</span>
-          <!-- TODO: cartStore.totalPrice를 toLocaleString()으로 포맷해서 표시하세요 -->
-          <span>₩{{ cartStore.totalPrice }}</span>
+          <span>₩{{ cartStore.totalPrice.toLocaleString() }}</span>
         </div>
       </div>
 
@@ -60,12 +53,12 @@ const cartStore = useCartStore()
 
 // 수량 변경: CartItem에서 { id, delta } 형태의 payload를 받습니다
 function handleChangeQty({ id, delta }) {
-  // TODO: cartStore.changeQty(id, delta)를 호출하세요
+  cartStore.changeQty(id, delta);
 }
 
 // 아이템 제거: CartItem에서 id를 받습니다
 function handleRemove(id) {
-  // TODO: cartStore.removeItem(id)를 호출하세요
+  cartStore.removeItem(id);
 }
 
 // 결제 버튼 클릭

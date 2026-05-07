@@ -31,6 +31,8 @@
         <!--       각 카드에서 'add-to-cart' 이벤트가 오면 handleAddToCart를 호출하세요 -->
         <div class="product-grid">
           <!-- ProductCard 여기에 -->
+           <ProductCard v-for="data in filteredProducts" :key="data.id" :product="data" @add-to-cart="handleAddToCart(data)"
+           />
         </div>
 
       </section>
@@ -66,9 +68,9 @@ const filteredProducts = computed(() => {
   return PRODUCTS
 })
 
-// 상품 카드에서 'add-to-cart' 이벤트를 받으면 실행됩니다
 function handleAddToCart(product) {
-  // TODO: cartStore.addItem(product)을 호출하세요
+  cartStore.addItem(product);
+  console.log('Added to cart:', product);
 }
 </script>
 

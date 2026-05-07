@@ -6,7 +6,7 @@
     <div class="info">
       <p class="name">{{ item.name }}</p>
       <!-- TODO: item.price * item.qty 를 계산해서 toLocaleString()으로 표시하세요 -->
-      <p class="subtotal">₩0</p>
+      <p class="subtotal">₩ {{ (item.price * item.qty).toLocaleString() }}</p>
     </div>
 
     <!-- 수량 조절 버튼 -->
@@ -16,14 +16,14 @@
         - '-' 버튼: delta = -1
         - '+' 버튼: delta = +1
       -->
-      <button class="qty-btn">−</button>
+      <button class="qty-btn" @click="() => handleChangeQty(-1)">−</button>
       <span class="qty">{{ item.qty }}</span>
-      <button class="qty-btn">+</button>
+      <button class="qty-btn" @click="() => handleChangeQty(1)">+</button>
     </div>
 
     <!-- 삭제 버튼 -->
     <!-- TODO: 클릭 시 handleRemove를 호출하세요 -->
-    <button class="remove-btn">✕</button>
+    <button class="remove-btn" @click="handleRemove">✕</button>
 
   </div>
 </template>
@@ -44,12 +44,12 @@ const emit = defineEmits(['change-qty', 'remove'])
 // 수량 변경 버튼 클릭 시 실행
 // delta: +1 (증가) 또는 -1 (감소)
 function handleChangeQty(delta) {
-  // TODO: emit으로 'change-qty' 이벤트와 { id: props.item.id, delta } 를 전달하세요
+  emit('change-qty', { id: props.item.id, delta });
 }
 
 // 삭제 버튼 클릭 시 실행
 function handleRemove() {
-  // TODO: emit으로 'remove' 이벤트와 props.item.id 를 전달하세요
+  emit('remove', props.item.id);
 }
 </script>
 
