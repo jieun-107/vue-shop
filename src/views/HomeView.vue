@@ -26,12 +26,7 @@
       </div>
 
       <div class="product-grid">
-        <!--
-          TODO: filteredProducts를 v-for로 순회하며 ProductCard를 렌더링하세요
-                - 'go-detail' 이벤트 → handleGoDetail
-                - 'add-to-cart' 이벤트 → handleAddToCart
-        -->
-        <ProductCard 
+        <ProductCard
           v-for="product in filteredProducts"
           :key="product.id"
           :product="product"

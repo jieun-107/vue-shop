@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView    from '../views/HomeView.vue'
-import ProductView from '../views/ProductView.vue'
+import { useAuthStore } from '../stores/authStore'
+import HomeView          from '../views/HomeView.vue'
+import ProductView       from '../views/ProductView.vue'
+import LoginView         from '../views/LoginView.vue'
+import CartView          from '../views/CartView.vue'
+import OrderCompleteView from '../views/OrderCompleteView.vue'
 
-// 라우트 정의
-// path: URL 경로
-// name: 라우트 이름 (router.push({ name: '...' }) 로 사용)
-// component: 해당 경로에서 렌더링할 컴포넌트
 const routes = [
   {
     path: '/',
@@ -13,17 +13,49 @@ const routes = [
     component: HomeView,
   },
   {
-    path: '/product/:id',   // :id → 동적 라우트 파라미터
+    path: '/product/:id',
     name: 'product',
     component: ProductView,
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: LoginView,
+  },
+  {
+    // meta.requiresAuth: true → Navigation Guard 에서 로그인 여부를 확인합니다
+    path: '/cart',
+    name: 'cart',
+    component: CartView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/order-complete',
+    name: 'order-complete',
+    component: OrderCompleteView,
+    meta: { requiresAuth: true },
   },
 ]
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
-  // 페이지 이동 시 스크롤 최상단으로
   scrollBehavior: () => ({ top: 0 }),
+})
+
+// ---------------------------------------------------------------
+// Navigation Guard (전역 가드)
+// 모든 페이지 이동 전에 실행됩니다.
+// to: 이동할 라우트 / from: 현재 라우트 / next: 진행 함수 (생략 가능)
+// ---------------------------------------------------------------
+router.beforeEach((to) => {
+  const authStore = useAuthStore(); // 스토어 가져오기
+  if(to.meta.requiresAuth) {
+    if(!authStore.isLoggedIn) {
+      return { name: 'login', query: { redirect: to.fullPath } }
+    }
+  }
+  
 })
 
 export default router
