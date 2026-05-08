@@ -1,6 +1,11 @@
 <template>
   <div class="card" :class="{ 'in-cart': isAlreadyInCart }" @click="emit('go-detail', product)">
 
+    <!-- 찜하기 버튼 -->
+    <button class="wish-btn" @click.stop="handleWish">
+      {{ isWished ? '❤️' : '🤍' }}
+    </button>
+
     <div class="emoji">{{ product.emoji }}</div>
 
     <div class="info">
@@ -8,7 +13,6 @@
       <p class="price">₩{{ product.price.toLocaleString() }}</p>
     </div>
 
-    <!-- 버튼 클릭은 카드 클릭(go-detail)과 분리되어야 하므로 .stop으로 이벤트 전파 차단 -->
     <button
       class="add-btn"
       :class="{ added: isAlreadyInCart }"
@@ -22,7 +26,9 @@
 
 <script setup>
 import { computed } from 'vue'
-import { useCartStore } from '../stores/cartStore'
+import { useCartStore }     from '../stores/cartStore'
+import { useWishlistStore } from '../stores/wishlistStore'
+import { useToastStore }    from '../stores/toastStore'
 
 const props = defineProps({
   product: { type: Object, required: true },
@@ -30,17 +36,35 @@ const props = defineProps({
 
 const emit = defineEmits(['add-to-cart', 'go-detail'])
 
-const cartStore = useCartStore()
+const cartStore     = useCartStore()
+const wishlistStore = useWishlistStore()
+const toastStore    = useToastStore()
 
 const isAlreadyInCart = computed(() => cartStore.isInCart(props.product.id))
 
+// 이 상품이 찜 목록에 있는지
+const isWished = computed(() => {
+  return wishlistStore.isWished(props.product.id)
+})
+
 function handleAdd() {
   emit('add-to-cart', props.product)
+  toastStore.show(`🛒 ${props.product.name} 담겼어요!`)
+}
+
+function handleWish() {
+  wishlistStore.toggle(props.product.id);
+  if (isWished.value) {
+    toastStore.show(`❤️ ${props.product.name} 찜했어요!`)
+  } else {
+    toastStore.show('🤍 찜 해제했어요')
+  }
 }
 </script>
 
 <style scoped>
 .card {
+  position: relative;
   background: #fff;
   border: 1px solid #e8e8e3;
   border-radius: 12px;
@@ -59,9 +83,19 @@ function handleAdd() {
 
 .card.in-cart { border-color: #27ae60; }
 
-.emoji { font-size: 36px; text-align: center; }
+.wish-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  padding: 2px;
+  line-height: 1;
+}
 
-.name { font-size: 14px; font-weight: 600; }
+.emoji { font-size: 36px; text-align: center; }
+.name  { font-size: 14px; font-weight: 600; }
 .price { font-size: 13px; color: #888; }
 
 .add-btn {
@@ -74,6 +108,6 @@ function handleAdd() {
   transition: all 0.15s;
 }
 
-.add-btn:hover { background: #f5f5f0; }
-.add-btn.added { background: #eafaf1; border-color: #27ae60; color: #27ae60; }
+.add-btn:hover  { background: #f5f5f0; }
+.add-btn.added  { background: #eafaf1; border-color: #27ae60; color: #27ae60; }
 </style>

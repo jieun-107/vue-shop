@@ -2,19 +2,19 @@
   <div class="app-layout">
 
     <header class="header">
-      <!-- 로고 클릭 시 홈으로 이동 (RouterLink = <a> 태그 대신 사용) -->
       <RouterLink to="/" class="logo">🛍️ Vue Shop</RouterLink>
 
       <div class="cart-icon-wrap">
-        <span class="cart-icon">🛒</span>
+        <span>🛒</span>
         <span class="badge" v-if="cartStore.totalCount > 0">
           {{ cartStore.totalCount }}
         </span>
       </div>
     </header>
 
-    <!-- 현재 라우트에 맞는 View 컴포넌트가 여기에 렌더링됩니다 -->
     <RouterView />
+
+    <ToastNotification />
 
   </div>
 </template>
@@ -22,14 +22,13 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import { useCartStore } from './stores/cartStore'
+import ToastNotification from './components/ToastNotification.vue';
 
 const cartStore = useCartStore()
 </script>
 
 <style scoped>
-.app-layout {
-  min-height: 100vh;
-}
+.app-layout { min-height: 100vh; }
 
 .header {
   display: flex;
@@ -50,10 +49,7 @@ const cartStore = useCartStore()
   color: inherit;
 }
 
-.cart-icon-wrap {
-  position: relative;
-  font-size: 24px;
-}
+.cart-icon-wrap { position: relative; font-size: 24px; }
 
 .badge {
   position: absolute;
