@@ -1,5 +1,5 @@
 <template>
-  <div class="card" :class="{ 'in-cart': isAlreadyInCart }">
+  <div class="card" :class="{ 'in-cart': isAlreadyInCart }" @click="emit('go-detail', product)">
 
     <div class="emoji">{{ product.emoji }}</div>
 
@@ -8,7 +8,12 @@
       <p class="price">₩{{ product.price.toLocaleString() }}</p>
     </div>
 
-    <button class="add-btn" :class="{ added: isAlreadyInCart }" @click="handleAdd">
+    <!-- 버튼 클릭은 카드 클릭(go-detail)과 분리되어야 하므로 .stop으로 이벤트 전파 차단 -->
+    <button
+      class="add-btn"
+      :class="{ added: isAlreadyInCart }"
+      @click.stop="handleAdd"
+    >
       {{ isAlreadyInCart ? '✓ 담김' : '+ 담기' }}
     </button>
 
@@ -19,28 +24,18 @@
 import { computed } from 'vue'
 import { useCartStore } from '../stores/cartStore'
 
-// props: 부모(App.vue)로부터 상품 데이터를 받습니다
 const props = defineProps({
-  product: {
-    type: Object,
-    required: true,
-    // 구조: { id, name, price, emoji, category }
-  },
+  product: { type: Object, required: true },
 })
 
-// emit: 부모에게 보낼 이벤트 목록
-const emit = defineEmits(['add-to-cart'])
+const emit = defineEmits(['add-to-cart', 'go-detail'])
 
 const cartStore = useCartStore()
 
-// 이 상품이 이미 장바구니에 담겼는지 여부
-const isAlreadyInCart = computed(() => {
-  return cartStore.isInCart(props.product.id);
-})
+const isAlreadyInCart = computed(() => cartStore.isInCart(props.product.id))
 
-// 담기 버튼 클릭 시 실행
 function handleAdd() {
-  emit('add-to-cart', props.product);
+  emit('add-to-cart', props.product)
 }
 </script>
 
@@ -53,27 +48,21 @@ function handleAdd() {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, transform 0.15s;
+  cursor: pointer;
 }
 
-.card.in-cart {
-  border-color: #27ae60;
+.card:hover {
+  border-color: #aaa;
+  transform: translateY(-2px);
 }
 
-.emoji {
-  font-size: 36px;
-  text-align: center;
-}
+.card.in-cart { border-color: #27ae60; }
 
-.name {
-  font-size: 14px;
-  font-weight: 600;
-}
+.emoji { font-size: 36px; text-align: center; }
 
-.price {
-  font-size: 13px;
-  color: #888;
-}
+.name { font-size: 14px; font-weight: 600; }
+.price { font-size: 13px; color: #888; }
 
 .add-btn {
   margin-top: auto;
@@ -85,13 +74,6 @@ function handleAdd() {
   transition: all 0.15s;
 }
 
-.add-btn:hover {
-  background: #f5f5f0;
-}
-
-.add-btn.added {
-  background: #eafaf1;
-  border-color: #27ae60;
-  color: #27ae60;
-}
+.add-btn:hover { background: #f5f5f0; }
+.add-btn.added { background: #eafaf1; border-color: #27ae60; color: #27ae60; }
 </style>
